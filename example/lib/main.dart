@@ -120,6 +120,9 @@ class MyApp extends StatelessWidget {
               },
             ),
             const SizedBox(height: 20),
+            const Text('Normal flutter textfield'),
+            const TextField(),
+            const SizedBox(height: 20),
             const Text('My App Chip Input'),
             AppChipsInputField(
               /*  onAdd: () => scrollController.jumpTo(
