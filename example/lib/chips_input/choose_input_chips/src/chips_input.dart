@@ -806,7 +806,8 @@ class ChipsInputState<T extends Object> extends State<ChipsInput<T>>
               textAlignVertical: widget.textAlignVertical,
               textDirection: widget.textDirection,
               readOnly: widget.readOnly,
-              contextMenuBuilder: widget.contextMenuBuilder,
+              contextMenuBuilder:
+                  widget.contextMenuBuilder ?? _getContextMenuBuilder(),
               onSubmitted: (String value) => widget.findSuggestions(
                 query: value,
                 isSubmitted: true,
