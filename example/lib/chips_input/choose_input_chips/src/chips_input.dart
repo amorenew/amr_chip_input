@@ -85,6 +85,7 @@ class ChipsInput<T extends Object> extends StatefulWidget {
     this.onAppPrivateCommand,
     this.inputFormatters,
     this.enabled,
+    this.allowDismissKeyboardOnSubmit = false,
     this.cursorWidth = 2.0,
     this.cursorHeight,
     this.cursorRadius,
@@ -140,6 +141,10 @@ class ChipsInput<T extends Object> extends StatefulWidget {
               maxLength == TextField.noMaxLength ||
               maxLength > 0,
           'maxLength must be null, TextField.noMaxLength or greater than 0',
+        ),
+        assert(
+          onEditingComplete == null || allowDismissKeyboardOnSubmit,
+          'you cannot prevent keyboard dismiss while having onEditingComplete',
         ),
         // Assert the following instead of setting it directly to avoid
         // surprising the user by silently changing the value they set.
@@ -364,6 +369,9 @@ class ChipsInput<T extends Object> extends StatefulWidget {
   /// If non-null this property overrides the [decoration]'s
   /// [InputDecoration.enabled] property.
   final bool? enabled;
+
+  /// on submit allow closing the keyboard
+  final bool allowDismissKeyboardOnSubmit;
 
   /// {@macro flutter.widgets.editableText.cursorWidth}
   final double cursorWidth;
@@ -679,7 +687,6 @@ class ChipsInputState<T extends Object> extends State<ChipsInput<T>>
           return;
         }
         final RenderBox renderBox = context.findRenderObject()! as RenderBox;
-
         await Scrollable.maybeOf(context)
             ?.position
             .ensureVisible(
@@ -806,11 +813,12 @@ class ChipsInputState<T extends Object> extends State<ChipsInput<T>>
               textAlignVertical: widget.textAlignVertical,
               textDirection: widget.textDirection,
               readOnly: widget.readOnly,
-              contextMenuBuilder: widget.contextMenuBuilder,
               onSubmitted: (String value) => widget.findSuggestions(
                 query: value,
                 isSubmitted: true,
               ),
+              onEditingComplete: widget.onEditingComplete ??
+                  (widget.allowDismissKeyboardOnSubmit ? null : () {}),
               showCursor: widget.showCursor,
               cursorWidth: widget.cursorWidth,
               cursorHeight: widget.cursorHeight,
@@ -823,7 +831,6 @@ class ChipsInputState<T extends Object> extends State<ChipsInput<T>>
               smartDashesType: widget.smartDashesType,
               smartQuotesType: widget.smartQuotesType,
               minLines: widget.minLines,
-              onEditingComplete: widget.onEditingComplete,
               onAppPrivateCommand: widget.onAppPrivateCommand,
               inputFormatters: widget.inputFormatters,
               selectionHeightStyle: widget.selectionHeightStyle,
